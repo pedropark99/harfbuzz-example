@@ -1,1 +1,6 @@
 /target
+harfbuzz-c
+/CMakeFiles
+CMakeCache.txt
+Makefile
+*.cmake
