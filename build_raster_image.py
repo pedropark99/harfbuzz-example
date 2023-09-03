@@ -4,7 +4,7 @@ import pandas as pd
 font_filepath = "/usr/share/fonts/google-noto/NotoSansMath-Regular.ttf"
 font_name = "Noto-Sans-Math-Regular"
 output_filename = "test.png"
-glyph_positions = pd.read_csv("glyph_positions.csv")
+glyph_positions = pd.read_csv("glyph_positions.csv", sep = ";")
 print(glyph_positions)
 
 image_size = 2000

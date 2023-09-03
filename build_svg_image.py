@@ -5,7 +5,7 @@ font_filepath = "/usr/share/fonts/google-noto/NotoSansMath-Regular.ttf"
 font_name = "Noto Sans Math"
 # font_name = "Arial"
 output_filename = "test.svg"
-glyph_positions = pd.read_csv("glyph_positions.csv")
+glyph_positions = pd.read_csv("glyph_positions.csv", sep = ";")
 print(glyph_positions)
 
 harfbuzz_factor = 35

@@ -9,15 +9,15 @@
 
 int main() {
 
-	// char *text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+	char *text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
-	char *text = "Hello World!";
+	// char *text = "Hello World!";
 	char *csv_filename = "glyph_positions.csv";
 	FILE *csv_handler = fopen(csv_filename, "w");
-	fprintf(csv_handler, "character,glyph_id,x_offset,y_offset,x_advance,y_advance,cursor_x,cursor_y\n");
+	fprintf(csv_handler, "character;glyph_id;x_offset;y_offset;x_advance;y_advance;cursor_x;cursor_y\n");
 	char *font_filepath = "/usr/share/fonts/google-noto/NotoSansMath-Regular.ttf";
 	double font_size = 35.0;
-	printf("Font size: %d\n", font_size);	
+	printf("Font size: %f\n", font_size);	
 
 
 	/* Initialize FreeType and create FreeType font face. */
@@ -65,7 +65,7 @@ int main() {
 
 		fprintf(
 			csv_handler,
-			"%c,%d,%f,%f,%f,%f,%f,%f\n",
+			"%c;%d;%f;%f;%f;%f;%f;%f\n",
 			current_char,
 			glyphid, 
 			x_offset, y_offset,
