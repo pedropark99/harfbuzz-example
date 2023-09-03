@@ -9,9 +9,9 @@ glyph_positions = pd.read_csv("glyph_positions.csv")
 print(glyph_positions)
 
 harfbuzz_factor = 35
-font_size = "35pt"
+font_size = 35
 y_pos = 80
-glyph_positions["cursor_x"] = glyph_positions["cursor_x"] / harfbuzz_factor
+# glyph_positions["cursor_x"] = glyph_positions["cursor_x"] / harfbuzz_factor
 
 dwg = svgwrite.Drawing('test.svg', profile='tiny')
 

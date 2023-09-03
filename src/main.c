@@ -5,7 +5,7 @@
 #include "harfbuzz/hb.h"
 #include "freetype/freetype.h"
 
-#define HARFBUZZ_PRECISION_FACTOR 64
+#define HARFBUZZ_PRECISION_FACTOR 64.0 
 
 int main() {
 
@@ -16,8 +16,27 @@ int main() {
 	FILE *csv_handler = fopen(csv_filename, "w");
 	fprintf(csv_handler, "character,glyph_id,x_offset,y_offset,x_advance,y_advance,cursor_x,cursor_y\n");
 	char *font_filepath = "/usr/share/fonts/google-noto/NotoSansMath-Regular.ttf";
-	int font_size = 35;
+	double font_size = 35.0;
 	printf("Font size: %d\n", font_size);	
+
+
+	/* Initialize FreeType and create FreeType font face. */
+	FT_Library ft_library;
+	FT_Face ft_face;
+	FT_Error ft_error;
+
+	if ((ft_error = FT_Init_FreeType (&ft_library)))
+		abort();
+	if ((ft_error = FT_New_Face (ft_library, font_filepath, 0, &ft_face)))
+		abort();
+	if ((ft_error = FT_Set_Char_Size (ft_face, font_size * 64.0, font_size * 64.0, 0, 0)))
+		abort();
+
+	/* Create hb-ft font. */
+	hb_font_t *hb_font;
+	hb_font = hb_ft_font_create(ft_face, NULL);
+
+
 
 	hb_buffer_t *buf = hb_buffer_create();
         hb_buffer_add_utf8(buf, text, -1, 0, -1);
@@ -26,18 +45,9 @@ int main() {
         hb_buffer_set_script(buf, HB_SCRIPT_LATIN);
         hb_buffer_set_language(buf, hb_language_from_string("en", -1));
 
-	
-	hb_blob_t *blob = hb_blob_create_from_file(font_filepath); /* or hb_blob_create_from_file_or_fail() */
-        hb_face_t *face = hb_face_create(blob, 0);
-        hb_font_t *font = hb_font_create(face);
-	hb_font_set_ptem(font, font_size);
-
-
 	// printf("Font data: %f\n", font->ptem);
-
-
 	
-	hb_shape(font, buf, NULL, 0);
+	hb_shape(hb_font, buf, NULL, 0);
 	unsigned int glyph_count;
         hb_glyph_info_t *glyph_info    = hb_buffer_get_glyph_infos(buf, &glyph_count);
         hb_glyph_position_t *glyph_pos = hb_buffer_get_glyph_positions(buf, &glyph_count);
@@ -48,13 +58,10 @@ int main() {
 	for (unsigned int i = 0; i < glyph_count; i++) {
 		char current_char = text[i];
 		hb_codepoint_t glyphid  = glyph_info[i].codepoint;
-		double x_offset  = glyph_pos[i].x_offset;
-		double y_offset  = glyph_pos[i].y_offset;
-		double x_advance = glyph_pos[i].x_advance;
-		double y_advance = glyph_pos[i].y_advance;
-		cursor_x += x_advance;
-		cursor_y += y_advance;
-
+		double x_offset  = (double) glyph_pos[i].x_offset / HARFBUZZ_PRECISION_FACTOR;
+		double y_offset  = (double) glyph_pos[i].y_offset / HARFBUZZ_PRECISION_FACTOR;
+		double x_advance = (double) glyph_pos[i].x_advance / HARFBUZZ_PRECISION_FACTOR;
+		double y_advance = (double) glyph_pos[i].y_advance / HARFBUZZ_PRECISION_FACTOR;	
 
 		fprintf(
 			csv_handler,
@@ -66,14 +73,14 @@ int main() {
 			cursor_x, cursor_y
 		);
 
+		cursor_x += x_advance;
+		cursor_y += y_advance;
+
 	}
 
 
 	hb_buffer_destroy(buf);
-	hb_font_destroy(font);
-	hb_face_destroy(face);
-	hb_blob_destroy(blob);
-	
+	FT_Done_FreeType(ft_library);
 	fclose(csv_handler);
 	return 1;
 }

@@ -10,7 +10,7 @@ print(glyph_positions)
 image_size = 2000
 dpi = 300
 font_size = 35
-glyph_positions["cursor_x"] = glyph_positions["cursor_x"] / font_size 
+# glyph_positions["cursor_x"] = glyph_positions["cursor_x"] / font_size 
 
 
 magick = "magick"
