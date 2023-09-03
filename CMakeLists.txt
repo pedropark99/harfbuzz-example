@@ -10,7 +10,11 @@ add_executable(harfbuzz-c
 	src/main.c 
 )
 
+add_executable(simple-raylib-example
+	src/raylib.c
+)
 
-target_link_libraries(harfbuzz-c gd freetype harfbuzz m)
+target_link_libraries(harfbuzz-c raylib freetype harfbuzz m)
+target_link_libraries(simple-raylib-example raylib m)
 
 
