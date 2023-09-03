@@ -5,7 +5,7 @@
 #include "harfbuzz/hb.h"
 #include "freetype/freetype.h"
 
-
+#define HARFBUZZ_PRECISION_FACTOR 64
 
 int main() {
 
@@ -16,7 +16,8 @@ int main() {
 	FILE *csv_handler = fopen(csv_filename, "w");
 	fprintf(csv_handler, "character,glyph_id,x_offset,y_offset,x_advance,y_advance,cursor_x,cursor_y\n");
 	char *font_filepath = "/usr/share/fonts/google-noto/NotoSansMath-Regular.ttf";
-	
+	int font_size = 35;
+	printf("Font size: %d\n", font_size);	
 
 	hb_buffer_t *buf = hb_buffer_create();
         hb_buffer_add_utf8(buf, text, -1, 0, -1);
@@ -29,6 +30,12 @@ int main() {
 	hb_blob_t *blob = hb_blob_create_from_file(font_filepath); /* or hb_blob_create_from_file_or_fail() */
         hb_face_t *face = hb_face_create(blob, 0);
         hb_font_t *font = hb_font_create(face);
+	hb_font_set_ptem(font, font_size);
+
+
+	// printf("Font data: %f\n", font->ptem);
+
+
 	
 	hb_shape(font, buf, NULL, 0);
 	unsigned int glyph_count;
@@ -62,6 +69,10 @@ int main() {
 	}
 
 
+	hb_buffer_destroy(buf);
+	hb_font_destroy(font);
+	hb_face_destroy(face);
+	hb_blob_destroy(blob);
 	
 	fclose(csv_handler);
 	return 1;
